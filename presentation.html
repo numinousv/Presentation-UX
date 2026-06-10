@@ -1,0 +1,1949 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Litter Hero — UX & Accessibility</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ----- GLOBAL RESET ----- */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        background: #0c1f14;
+        font-family: "Noto Sans", sans-serif;
+        overflow: hidden;
+      }
+      /* ----- DECK (full viewport) ----- */
+      .deck {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0c1f14;
+      }
+      .stage {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        max-width: 100%;
+        max-height: 100%;
+        overflow: hidden;
+        background: #eefcf3;
+      }
+      /* ----- SLIDES ----- */
+      .slide {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        flex-direction: column;
+        padding: 40px 56px;
+        background: #eefcf3;
+        color: #363636;
+        overflow-y: auto;
+      }
+      .slide.active {
+        display: flex;
+        animation: fadeUp 0.45s ease;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* ----- CHROME (top bar) ----- */
+      .chrome {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #717171;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(29, 78, 47, 0.14);
+        flex-shrink: 0;
+      }
+      .chrome .wordmark {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #1d4e2f;
+        font-weight: 700;
+      }
+      .chrome .wordmark .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #4ade80;
+        box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.25);
+      }
+      .chrome .sec {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .chrome .sec .num {
+        padding: 3px 9px;
+        border: 1px solid #363636;
+        border-radius: 999px;
+        color: #363636;
+        font-weight: 700;
+      }
+
+      /* ----- TYPOGRAPHY ----- */
+      .eyebrow {
+        font-size: 14px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #1d4e2f;
+        margin: 24px 0 10px;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      h2.title {
+        font-weight: 700;
+        color: #1d4e2f;
+        font-size: clamp(40px, 5.2vw, 72px);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+        margin: 0 0 16px;
+        max-width: 1200px;
+        flex-shrink: 0;
+      }
+      h2.title em {
+        font-style: italic;
+        font-weight: 400;
+        color: #1d4e2f;
+      }
+      .lede {
+        font-size: 20px;
+        line-height: 1.45;
+        color: #363636;
+        max-width: 900px;
+        flex-shrink: 0;
+      }
+      .lede strong {
+        background: linear-gradient(
+          transparent 62%,
+          #86efac 62%,
+          #86efac 92%,
+          transparent 92%
+        );
+        padding: 0 3px;
+        color: #1d4e2f;
+      }
+
+      /* ----- FOOTER ----- */
+      .foot {
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        color: #717171;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        padding-top: 14px;
+        border-top: 1px solid rgba(29, 78, 47, 0.14);
+        flex-shrink: 0;
+      }
+      .foot .pg {
+        color: #1d4e2f;
+        font-weight: 700;
+      }
+
+      /* ----- COVER ----- */
+      .slide.cover {
+        padding: 0;
+        background: linear-gradient(
+          160deg,
+          #143d26 0%,
+          #1d4e2f 55%,
+          #0f2e1b 100%
+        );
+        color: #ffffff;
+      }
+      .cover-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        height: 100%;
+        width: 100%;
+      }
+      .cover-left {
+        padding: 44px 48px 48px 56px;
+        display: flex;
+        flex-direction: column;
+      }
+      .cover-left .chrome {
+        color: rgba(238, 252, 243, 0.7);
+      }
+      .cover-left .chrome .wordmark {
+        color: #ffffff;
+      }
+      .cover-left .chrome .wordmark .dot {
+        background: #86efac;
+        box-shadow: 0 0 0 4px rgba(134, 239, 172, 0.25);
+      }
+      .cover-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        align-self: flex-start;
+        padding: 8px 14px;
+        border: 1px solid rgba(238, 252, 243, 0.4);
+        border-radius: 999px;
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #ffffff;
+        margin-top: auto;
+      }
+      .cover-pill .sq {
+        width: 8px;
+        height: 8px;
+        background: #86efac;
+      }
+      h1.cover-title {
+        font-weight: 700;
+        font-size: clamp(72px, 10vw, 160px);
+        line-height: 0.86;
+        letter-spacing: -0.045em;
+        margin: 14px 0 12px;
+        color: #ffffff;
+      }
+      h1.cover-title em {
+        font-style: italic;
+        color: #86efac;
+        font-weight: 400;
+      }
+      .cover-tag {
+        font-style: italic;
+        font-size: 24px;
+        color: rgba(238, 252, 243, 0.85);
+        max-width: 540px;
+        line-height: 1.25;
+      }
+      .cover-meta {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(238, 252, 243, 0.7);
+        margin-top: 20px;
+      }
+      .cover-meta b {
+        display: block;
+        color: #ffffff;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .cover-right {
+        background: linear-gradient(160deg, #0f2e1b, #1d4e2f);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .cover-right .badge {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        border: 1px dashed rgba(134, 239, 172, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #86efac;
+        font-style: italic;
+        font-size: 22px;
+        text-align: center;
+        padding: 30px;
+        line-height: 1.3;
+      }
+      .cover-marquee {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 12px 0;
+        background: #86efac;
+        color: #1d4e2f;
+        font-size: 12px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+        font-weight: 700;
+      }
+      .cover-marquee span {
+        display: inline-block;
+        padding-left: 100%;
+        animation: scroll 32s linear infinite;
+      }
+      @keyframes scroll {
+        to {
+          transform: translateX(-100%);
+        }
+      }
+
+      /* ----- SECTION DIVIDER ----- */
+      .slide.section {
+        background: linear-gradient(165deg, #1d4e2f, #0f2e1b);
+        color: #ffffff;
+        justify-content: space-between;
+      }
+      .slide.section .chrome {
+        color: rgba(238, 252, 243, 0.65);
+      }
+      .slide.section .chrome .wordmark {
+        color: #ffffff;
+      }
+      .slide.section .chrome .sec .num {
+        border-color: rgba(238, 252, 243, 0.55);
+        color: #ffffff;
+      }
+      .section-body {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: end;
+        gap: 40px;
+        margin-top: auto;
+      }
+      .section-label {
+        font-size: 14px;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: #86efac;
+        margin-bottom: 16px;
+        font-weight: 700;
+      }
+      .section-title {
+        font-weight: 400;
+        font-size: clamp(64px, 9vw, 140px);
+        line-height: 0.88;
+        letter-spacing: -0.04em;
+        color: #ffffff;
+        max-width: 1100px;
+      }
+      .section-title em {
+        font-style: italic;
+        color: #86efac;
+      }
+      .section-number {
+        font-size: clamp(120px, 20vw, 280px);
+        line-height: 0.8;
+        color: rgba(238, 252, 243, 0.08);
+        font-weight: 700;
+        letter-spacing: -0.05em;
+      }
+      .slide.section .foot {
+        color: rgba(238, 252, 243, 0.6);
+      }
+      .slide.section .foot .pg {
+        color: #86efac;
+      }
+
+      /* ----- CARDS / LISTS ----- */
+      .split {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 40px;
+        margin-top: 16px;
+        align-items: center;
+        flex: 1;
+        min-height: 0;
+      }
+      .pullquote {
+        font-family: Georgia, serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: clamp(18px, 2.2vw, 28px);
+        line-height: 1.25;
+        color: #1d4e2f;
+        padding: 0 8px;
+      }
+      .pullquote .mark {
+        font-family: Georgia, serif;
+        font-style: normal;
+        font-size: 80px;
+        line-height: 0;
+        color: #4ade80;
+        opacity: 0.55;
+        vertical-align: -28px;
+        margin-right: 4px;
+      }
+      .pullquote .who {
+        display: block;
+        margin-top: 18px;
+        font-style: normal;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #717171;
+      }
+      ol.editorial {
+        list-style: none;
+        counter-reset: e;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 12px;
+        flex-shrink: 0;
+      }
+      ol.editorial li {
+        counter-increment: e;
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: 16px;
+        align-items: start;
+        padding-top: 12px;
+        border-top: 1px solid rgba(29, 78, 47, 0.14);
+      }
+      ol.editorial li::before {
+        content: counter(e, decimal-leading-zero);
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        color: #1d4e2f;
+        padding-top: 4px;
+        font-weight: 700;
+      }
+      ol.editorial li .b {
+        font-size: 20px;
+        line-height: 1.3;
+        color: #363636;
+        font-weight: 400;
+      }
+      ol.editorial li .b strong {
+        font-weight: 700;
+        color: #1d4e2f;
+        background: linear-gradient(
+          transparent 62%,
+          #86efac 62%,
+          #86efac 92%,
+          transparent 92%
+        );
+        padding: 0 3px;
+      }
+
+      /* ----- GOAL GRID ----- */
+      .goal-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 20px;
+        flex: 1;
+        min-height: 0;
+      }
+      .goal {
+        padding: 22px 18px 18px;
+        border-radius: 16px;
+        background: #ffffff;
+        border: 1px solid rgba(29, 78, 47, 0.14);
+        display: flex;
+        flex-direction: column;
+      }
+      .goal:nth-child(1) {
+        background: #1d4e2f;
+        color: #ffffff;
+      }
+      .goal:nth-child(1) .goal-k {
+        color: #86efac;
+      }
+      .goal:nth-child(2) {
+        background: #4ade80;
+        color: #1d4e2f;
+      }
+      .goal:nth-child(2) .goal-k {
+        color: #1d4e2f;
+      }
+      .goal:nth-child(3) {
+        background: #ffffff;
+        color: #363636;
+      }
+      .goal:nth-child(3) .goal-k {
+        color: #1d4e2f;
+      }
+      .goal .goal-num {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        font-weight: 700;
+        opacity: 0.7;
+        text-align: right;
+      }
+      .goal .goal-k {
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        font-weight: 700;
+      }
+      .goal .goal-t {
+        font-weight: 400;
+        font-size: 26px;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        margin-bottom: 10px;
+      }
+      .goal .goal-d {
+        font-size: 14px;
+        line-height: 1.5;
+        margin-top: auto;
+      }
+
+      /* ----- AUDIENCE ----- */
+      .audience {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-top: 16px;
+        flex: 1;
+        min-height: 0;
+      }
+      .aud-card {
+        background: #ffffff;
+        border: 1px solid rgba(29, 78, 47, 0.14);
+        border-radius: 14px;
+        padding: 16px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .aud-card.dark {
+        background: #1d4e2f;
+        color: #ffffff;
+        border-color: transparent;
+      }
+      .aud-card.dark .ak {
+        color: #86efac;
+      }
+      .aud-card.dark .av {
+        color: #ffffff;
+      }
+      .aud-card.dark .ad {
+        color: rgba(238, 252, 243, 0.85);
+      }
+      .aud-card .ak {
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #1d4e2f;
+        font-weight: 700;
+      }
+      .aud-card .av {
+        font-size: 34px;
+        line-height: 0.95;
+        color: #1d4e2f;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .aud-card .av em {
+        font-style: italic;
+        color: #4ade80;
+        font-weight: 400;
+      }
+      .aud-card .ad {
+        font-size: 13px;
+        line-height: 1.45;
+        color: #363636;
+        margin-top: 2px;
+      }
+
+      /* ----- FLOW ----- */
+      .flow {
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+      }
+      .flow-step {
+        flex: 1;
+        min-width: 110px;
+        background: #ffffff;
+        border: 1px solid rgba(29, 78, 47, 0.14);
+        border-radius: 14px;
+        padding: 14px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .flow-step.key {
+        background: #1d4e2f;
+        color: #ffffff;
+        border-color: transparent;
+      }
+      .flow-step.key .fs-num,
+      .flow-step.key .fs-sub {
+        color: #86efac;
+      }
+      .flow-step.key .fs-t {
+        color: #ffffff;
+      }
+      .fs-num {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        color: #1d4e2f;
+        font-weight: 700;
+      }
+      .fs-t {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1d4e2f;
+        letter-spacing: -0.01em;
+        line-height: 1.15;
+      }
+      .fs-sub {
+        font-size: 12px;
+        color: #717171;
+        line-height: 1.4;
+      }
+
+      /* ----- EVO (iteration timeline) ----- */
+      .evo {
+        margin-top: 16px;
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .evo-track {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        position: relative;
+      }
+      .evo-track::before {
+        content: "";
+        position: absolute;
+        top: 16px;
+        left: 6%;
+        right: 6%;
+        height: 2px;
+        background: linear-gradient(90deg, rgba(255, 91, 62, 0.35), #4ade80);
+        z-index: 0;
+      }
+      .evo-step {
+        position: relative;
+        background: #ffffff;
+        border: 1px solid rgba(29, 78, 47, 0.14);
+        border-radius: 14px;
+        padding: 14px 12px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        z-index: 1;
+      }
+      .evo-step .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #1d4e2f;
+        border: 3px solid #eefcf3;
+        position: absolute;
+        top: 9px;
+        left: 16px;
+      }
+      .evo-step.late .dot {
+        background: #4ade80;
+      }
+      .evo-step .wk {
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #717171;
+        font-weight: 700;
+        padding-left: 22px;
+      }
+      .evo-step h4 {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1d4e2f;
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        margin-top: 2px;
+      }
+      .evo-step p {
+        font-size: 13px;
+        line-height: 1.45;
+        color: #363636;
+      }
+      .evo-note {
+        background: #1d4e2f;
+        color: #ffffff;
+        border-radius: 14px;
+        padding: 14px 18px;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+      .evo-note .tag {
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #86efac;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .evo-note p {
+        font-size: 15px;
+        line-height: 1.45;
+        color: #ffffff;
+      }
+      .evo-note p em {
+        color: #86efac;
+        font-style: italic;
+      }
+
+      /* ----- DEMO ----- */
+      .slide.demo {
+        background: linear-gradient(165deg, #1d4e2f, #0f2e1b);
+        color: #ffffff;
+      }
+      .slide.demo .chrome {
+        color: rgba(238, 252, 243, 0.65);
+      }
+      .slide.demo .chrome .wordmark {
+        color: #ffffff;
+      }
+      .slide.demo .chrome .sec .num {
+        border-color: rgba(238, 252, 243, 0.55);
+        color: #ffffff;
+      }
+      .demo-wrap {
+        margin: auto 0;
+        max-width: 1180px;
+      }
+      .demo-eyebrow {
+        font-size: 13px;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: #86efac;
+        margin-bottom: 18px;
+        font-weight: 700;
+      }
+      .demo-title {
+        font-weight: 400;
+        font-size: clamp(90px, 14vw, 190px);
+        line-height: 0.85;
+        letter-spacing: -0.05em;
+        color: #ffffff;
+        margin-bottom: 22px;
+      }
+      .demo-title em {
+        font-style: italic;
+        color: #86efac;
+        font-weight: 400;
+      }
+      .demo-flow {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(238, 252, 243, 0.85);
+      }
+      .demo-flow span {
+        padding: 10px 16px;
+        border: 1px solid rgba(238, 252, 243, 0.25);
+        border-radius: 999px;
+      }
+      .demo-flow .arrow {
+        border: none;
+        color: #86efac;
+        padding: 0 4px;
+      }
+      .slide.demo .foot {
+        color: rgba(238, 252, 243, 0.6);
+      }
+      .slide.demo .foot .pg {
+        color: #86efac;
+      }
+
+      /* ----- PRINCIPLES (WCAG & NIELSEN) ----- */
+      .principles {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 16px;
+        flex: 1;
+        min-height: 0;
+      }
+      .principle {
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(29, 78, 47, 0.14);
+        display: flex;
+        flex-direction: column;
+      }
+      .principle .top {
+        background: #1d4e2f;
+        color: #ffffff;
+        padding: 18px 22px;
+      }
+      .principle .top .k {
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #86efac;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .principle .top h3 {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+      .principle .top h3 em {
+        font-style: italic;
+        color: #86efac;
+        font-weight: 400;
+      }
+      .principle .body {
+        background: #ffffff;
+        padding: 18px 22px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .principle .body p {
+        font-size: 15px;
+        line-height: 1.55;
+        color: #363636;
+      }
+      .principle .body p strong {
+        color: #1d4e2f;
+      }
+      .principle .body .effect {
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid rgba(29, 78, 47, 0.14);
+        font-size: 13px;
+        letter-spacing: 0.06em;
+        color: #1d4e2f;
+        font-style: italic;
+      }
+
+      /* ----- NIELSEN CARDS ----- */
+      .nielsen-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 16px;
+        flex: 1;
+        min-height: 0;
+      }
+      .nielsen-card {
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(29, 78, 47, 0.14);
+        display: flex;
+        flex-direction: column;
+      }
+      .nielsen-card .top {
+        background: #1d4e2f;
+        color: #ffffff;
+        padding: 18px 22px;
+      }
+      .nielsen-card .top .k {
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #86efac;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .nielsen-card .top h3 {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+      .nielsen-card .top h3 em {
+        font-style: italic;
+        color: #86efac;
+        font-weight: 400;
+      }
+      .nielsen-card .body {
+        background: #ffffff;
+        padding: 18px 22px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .nielsen-card .body p {
+        font-size: 15px;
+        line-height: 1.55;
+        color: #363636;
+      }
+      .nielsen-card .body p strong {
+        color: #1d4e2f;
+      }
+      .nielsen-card .body .effect {
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid rgba(29, 78, 47, 0.14);
+        font-size: 13px;
+        letter-spacing: 0.06em;
+        color: #1d4e2f;
+        font-style: italic;
+      }
+
+      .wcag {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 4px;
+      }
+      .wcag .chip {
+        padding: 4px 10px;
+        background: #86efac;
+        color: #1d4e2f;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+      .contrast {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 10px;
+      }
+      .contrast .box {
+        border-radius: 12px;
+        padding: 12px 14px;
+      }
+      .contrast .pass {
+        background: #e8fff0;
+        border: 1px solid rgba(74, 222, 128, 0.4);
+      }
+      .contrast .fail {
+        background: #fff5f1;
+        border: 1px solid rgba(255, 91, 62, 0.3);
+      }
+      .contrast .ratio {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+        color: #1d4e2f;
+      }
+      .contrast .fail .ratio {
+        color: #a63b22;
+      }
+      .contrast .verdict {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-top: 4px;
+      }
+      .contrast .pass .verdict {
+        color: #1d4e2f;
+      }
+      .contrast .fail .verdict {
+        color: #ff5b3e;
+      }
+      .contrast .lbl {
+        font-size: 11px;
+        color: #717171;
+        margin-top: 4px;
+        letter-spacing: 0.06em;
+      }
+
+      /* ----- MICROCOPY ----- */
+      .micro {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+        flex-shrink: 0;
+      }
+      .micro .m {
+        background: #ffffff;
+        border: 1px solid rgba(29, 78, 47, 0.14);
+        border-radius: 14px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .micro .m .k {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #1d4e2f;
+        font-weight: 700;
+      }
+      .micro .m .before {
+        font-size: 14px;
+        color: #ff5b3e;
+        text-decoration: line-through;
+      }
+      .micro .m .after {
+        font-size: 18px;
+        color: #1d4e2f;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+      .micro .m .why {
+        font-size: 13px;
+        color: #717171;
+        line-height: 1.5;
+        margin-top: auto;
+      }
+
+      /* ----- CLOSING ----- */
+      .slide.closing {
+        background: linear-gradient(170deg, #0f2e1b, #1d4e2f 60%, #143d26);
+        color: #ffffff;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .slide.closing::before {
+        content: "";
+        position: absolute;
+        width: 800px;
+        height: 800px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(134, 239, 172, 0.22),
+          transparent 60%
+        );
+        top: -200px;
+        right: -200px;
+      }
+      .slide.closing::after {
+        content: "";
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(74, 222, 128, 0.18),
+          transparent 65%
+        );
+        bottom: -180px;
+        left: -150px;
+      }
+      .closing-inner {
+        position: relative;
+        z-index: 1;
+      }
+      .thanks {
+        font-weight: 400;
+        font-size: clamp(100px, 18vw, 280px);
+        line-height: 0.85;
+        letter-spacing: -0.06em;
+        color: #ffffff;
+        margin-bottom: 16px;
+      }
+      .thanks em {
+        font-style: italic;
+        color: #86efac;
+        font-weight: 400;
+      }
+      .questions {
+        font-style: italic;
+        font-size: 28px;
+        color: rgba(238, 252, 243, 0.75);
+        margin-bottom: 24px;
+      }
+      .closing-meta {
+        font-size: 13px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(238, 252, 243, 0.7);
+        display: flex;
+        gap: 28px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* ----- NAV ----- */
+      .nav {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        z-index: 20;
+        background: rgba(29, 78, 47, 0.92);
+        backdrop-filter: blur(14px);
+        padding: 10px 18px;
+        border-radius: 999px;
+        border: 1px solid rgba(238, 252, 243, 0.18);
+      }
+      .nav button {
+        width: 34px;
+        height: 34px;
+        border: none;
+        background: rgba(238, 252, 243, 0.12);
+        color: #ffffff;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      .nav button:hover {
+        background: #86efac;
+        color: #1d4e2f;
+      }
+      .nav .counter {
+        font-size: 12px;
+        color: rgba(238, 252, 243, 0.85);
+        letter-spacing: 0.1em;
+        min-width: 54px;
+        text-align: center;
+        font-weight: 700;
+      }
+
+      .hint {
+        position: fixed;
+        bottom: 26px;
+        right: 28px;
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(238, 252, 243, 0.45);
+        z-index: 20;
+      }
+      .hint kbd {
+        background: rgba(238, 252, 243, 0.12);
+        border: 1px solid rgba(238, 252, 243, 0.18);
+        border-radius: 4px;
+        padding: 2px 6px;
+        margin: 0 2px;
+        color: #ffffff;
+        font-family: inherit;
+      }
+
+      @media (max-width: 1000px) {
+        .slide {
+          padding: 24px 24px;
+        }
+        .cover-grid {
+          grid-template-columns: 1fr;
+        }
+        .cover-right {
+          display: none;
+        }
+        .split,
+        .principles,
+        .nielsen-grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        .goal-grid,
+        .audience,
+        .micro {
+          grid-template-columns: 1fr;
+        }
+        .evo-track {
+          grid-template-columns: 1fr 1fr;
+        }
+        .section-body {
+          grid-template-columns: 1fr;
+        }
+        .section-number {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="deck">
+      <div class="stage">
+        <!-- SLIDE 0: COVER -->
+        <section class="slide cover active">
+          <div class="cover-grid">
+            <div class="cover-left">
+              <div class="chrome">
+                <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+                <div class="sec">UX &amp; Tillgänglighet · Examination</div>
+              </div>
+              <h1 class="cover-title">Litter<br /><em>Hero.</em></h1>
+              <div class="cover-tag">
+                Rapportera. Verifiera. Städa upp.<br />Tillsammans — och
+                tillgängligt för alla.
+              </div>
+              <div class="cover-pill">
+                <span class="sq"></span>Rapportflödet — från idé till
+                Hi-Fi-prototyp
+              </div>
+              <div class="cover-meta">
+                <div><b>Kurs</b>UX &amp; Tillgänglighet</div>
+                <div><b>Fokus</b>Ett användarflöde</div>
+                <div><b>Tid</b>≈ 15 min</div>
+              </div>
+            </div>
+            <div class="cover-right">
+              <div class="badge">
+                "Designad för<br />den engagerade<br />medborgaren."
+              </div>
+            </div>
+          </div>
+          <div class="cover-marquee">
+            <span
+              >UX-writing · Microcopy · Visuell hierarki · WCAG 2.2 ·
+              Användarcentrerad design ·&nbsp;</span
+            >
+          </div>
+        </section>
+
+        <!-- SLIDE 1: AGENDA -->
+        <section class="slide">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>Agenda</span><span class="num">01</span>
+            </div>
+          </div>
+          <div class="eyebrow">Det här går vi igenom</div>
+          <h2 class="title">
+            Ett flöde, <em>en process,</em><br />några beslut.
+          </h2>
+          <ol class="editorial" style="max-width: 1100px">
+            <li>
+              <div class="b">
+                <strong>Introduktion</strong> — problemet och målgruppen.
+              </div>
+            </li>
+            <li>
+              <div class="b">
+                <strong>Inspiration</strong> — varifrån kom idén?
+              </div>
+            </li>
+            <li>
+              <div class="b">
+                <strong>Designprocess</strong> — flöde, wireframes och
+                iterationer.
+              </div>
+            </li>
+            <li>
+              <div class="b">
+                <strong>Demo</strong> — genomgång av den klickbara prototypen.
+              </div>
+            </li>
+            <li>
+              <div class="b">
+                <strong>Tillgänglighet &amp; principer</strong> — två principer,
+                applicerade med avsikt.
+              </div>
+            </li>
+          </ol>
+          <div class="foot">
+            <span>Litter Hero — UX &amp; Tillgänglighet</span
+            ><span class="pg">01 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 2: INSPIRATION (NEW) -->
+        <section class="slide">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>Inspiration</span><span class="num">02</span>
+            </div>
+          </div>
+          <div class="eyebrow">Två helt olika världar.</div>
+          <h2 class="title">Håll Sverige Rent <em>möter</em> Pokémon GO.</h2>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 30px;
+              margin-top: 10px;
+            "
+          >
+            <div
+              style="
+                background: #ffffff;
+                border: 1px solid rgba(29, 78, 47, 0.14);
+                border-radius: 20px;
+                padding: 24px 28px;
+              "
+            >
+              <div style="font-size: 32px; margin-bottom: 8px">🇸🇪</div>
+              <h3 style="font-weight: 700; color: #1d4e2f; margin-bottom: 6px">
+                Håll Sverige Rent
+              </h3>
+              <p style="font-size: 15px; line-height: 1.5; color: #363636">
+                <strong>Civic reporting:</strong> Medborgare rapporterar skräp.
+                Strukturen påminner om ett system för att hålla offentliga
+                platser rena.
+              </p>
+            </div>
+            <div
+              style="
+                background: #ffffff;
+                border: 1px solid rgba(29, 78, 47, 0.14);
+                border-radius: 20px;
+                padding: 24px 28px;
+              "
+            >
+              <div style="font-size: 32px; margin-bottom: 8px">🎮</div>
+              <h3 style="font-weight: 700; color: #1d4e2f; margin-bottom: 6px">
+                Pokémon GO
+              </h3>
+              <p style="font-size: 15px; line-height: 1.5; color: #363636">
+                <strong>Gamification &amp; exploration:</strong> Karta,
+                belöningar, och community-drivna evenemang. Härifrån kom idén om
+                att skapa engagemang genom lek.
+              </p>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 14px;
+              background: #e8fff0;
+              padding: 16px 22px;
+              border-radius: 14px;
+              border-left: 6px solid #4ade80;
+            "
+          >
+            <p style="font-size: 15px; color: #1d4e2f; font-weight: 500">
+              Kombinationen av <strong>rapportering</strong> (Håll Sverige Rent)
+              och <strong>spel­mekanik</strong> (Pokémon GO) lade grunden för
+              Litter Hero: ett verktyg som gör städning <em>roligt</em> och
+              <em>synligt</em>.
+            </p>
+          </div>
+          <div class="foot">
+            <span>Idén föddes ur två helt olika perspektiv</span
+            ><span class="pg">02 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 3: SECTION 1 -->
+        <section class="slide section">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>Del ett</span><span class="num">03</span>
+            </div>
+          </div>
+          <div class="section-body">
+            <div>
+              <div class="section-label">Del 01</div>
+              <div class="section-title">
+                Introduktion <em>till flödet.</em>
+              </div>
+            </div>
+            <div class="section-number">01</div>
+          </div>
+          <div class="foot">
+            <span>Problemet · målgruppen · kontexten</span
+            ><span class="pg">03 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 4: PROBLEM -->
+        <section class="slide">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>Problemet</span><span class="num">04</span>
+            </div>
+          </div>
+          <div class="eyebrow">Problemet</div>
+          <h2 class="title">
+            Folk <em>ser</em> skräpet.<br />Men
+            <strong>plockar inte upp</strong> det.
+          </h2>
+          <div class="split">
+            <blockquote class="pullquote">
+              <span class="mark">&ldquo;</span>Anledningen till att jag inte
+              plockar upp skräp är att jag inte får ut nåt av det &mdash; och
+              man blir smutsig på köpet.
+              <span class="who">Intervju &middot; Elev i FMW25</span>
+            </blockquote>
+            <div>
+              <p class="lede" style="font-size: 20px">
+                Insikten formade hela flödet: städandet måste kännas
+                <strong>belönande</strong>, inte som en plikt.
+              </p>
+            </div>
+          </div>
+          <div class="foot">
+            <span>Källa: användarintervjuer</span
+            ><span class="pg">04 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 5: AUDIENCE -->
+        <section class="slide">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>Målgrupp</span><span class="num">05</span>
+            </div>
+          </div>
+          <div class="eyebrow">Målgrupp &amp; kontext</div>
+          <h2 class="title">Den <em>engagerade</em> medborgaren.</h2>
+          <p class="lede" style="margin-top: 10px">
+            Baserat på
+            <strong>användarintervjuer och fältobservationer</strong> — inte en
+            påhittad persona.
+          </p>
+          <div class="audience">
+            <div class="aud-card dark">
+              <div class="ak">Vem</div>
+              <div class="av">18–45</div>
+              <div class="ad">
+                Miljöintresserade i rörelse — pendlare, hundägare, löpare.
+                Använder mobilen enhandsvis utomhus.
+              </div>
+            </div>
+            <div class="aud-card">
+              <div class="ak">Drivkraft</div>
+              <div class="av"><em>Bekräftelse</em></div>
+              <div class="ad">
+                Vill bidra, men behöver känna att insatsen syns och räknas.
+                Pliktkänsla räcker inte.
+              </div>
+            </div>
+            <div class="aud-card">
+              <div class="ak">Hinder</div>
+              <div class="av">Smuts &amp; tid</div>
+              <div class="ad">
+                Återkommande tema i intervjuer: städandet uppfattas som äckligt,
+                otacksamt och utan synlig effekt.
+              </div>
+            </div>
+          </div>
+          <div class="foot">
+            <span>Målgrupp · grundad i intervjuer</span
+            ><span class="pg">05 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 6: SECTION 2 -->
+        <section class="slide section">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>Del två</span><span class="num">06</span>
+            </div>
+          </div>
+          <div class="section-body">
+            <div>
+              <div class="section-label">Del 02</div>
+              <div class="section-title">
+                Designprocess <em>&amp; prototyp.</em>
+              </div>
+            </div>
+            <div class="section-number">02</div>
+          </div>
+          <div class="foot">
+            <span>Flöde · wireframes · iterationer · Hi-Fi</span
+            ><span class="pg">06 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 7: USER FLOW -->
+        <section class="slide">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>Användarflöde</span><span class="num">07</span>
+            </div>
+          </div>
+          <div class="eyebrow">Flödet</div>
+          <h2 class="title">Rapportera → Rösta → <em>Tjäna</em> → Följ.</h2>
+          <div class="flow">
+            <div class="flow-step">
+              <div class="fs-num">01</div>
+              <div class="fs-t">Öppna app</div>
+              <div class="fs-sub">Karta med rapporter i närheten.</div>
+            </div>
+            <div class="flow-step key">
+              <div class="fs-num">02 · NYCKEL</div>
+              <div class="fs-t">Foto</div>
+              <div class="fs-sub">Kamera-först, ett tryck.</div>
+            </div>
+            <div class="flow-step key">
+              <div class="fs-num">03 · NYCKEL</div>
+              <div class="fs-t">Plats</div>
+              <div class="fs-sub">GPS fyller i automatiskt.</div>
+            </div>
+            <div class="flow-step key">
+              <div class="fs-num">04 · NYCKEL</div>
+              <div class="fs-t">Community-röster</div>
+              <div class="fs-sub">Andra användare verifierar.</div>
+            </div>
+            <div class="flow-step">
+              <div class="fs-num">05</div>
+              <div class="fs-t">Öppen kö</div>
+              <div class="fs-sub">Rapporten blir synlig &amp; städbar.</div>
+            </div>
+            <div class="flow-step">
+              <div class="fs-num">06</div>
+              <div class="fs-t">Poäng &amp; badge</div>
+              <div class="fs-sub">Nivå upp, lås upp utmärkelser.</div>
+            </div>
+          </div>
+          <div class="foot">
+            <span>Kritisk väg = foto · plats · röst</span
+            ><span class="pg">07 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 8: DESIGN DECISIONS -->
+        <section class="slide">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>Designbeslut</span><span class="num">08</span>
+            </div>
+          </div>
+          <div class="eyebrow">Tre beslut som formade flödet</div>
+          <h2 class="title">
+            Mot <em>fusk</em>. För <strong>motivation.</strong>
+          </h2>
+          <div class="goal-grid">
+            <div class="goal">
+              <div class="goal-num">01</div>
+              <div class="goal-k">Anti-fusk</div>
+              <div class="goal-t">Community-röstning.</div>
+              <div class="goal-d">
+                Nya rapporter hamnar i <strong>Pending</strong> tills andra
+                användare röstat upp dem till <strong>Open</strong>. Filter mot
+                falska bilder utan tunga AI-modeller.
+              </div>
+            </div>
+            <div class="goal">
+              <div class="goal-num">02</div>
+              <div class="goal-k">Belöning</div>
+              <div class="goal-t">+10 % poängboost.</div>
+              <div class="goal-d">
+                Vid utvalda kampanjer eller områden får städaren en boost på
+                sina poäng — gör flödet kännbart roligare utan att devalvera
+                grundpoängen.
+              </div>
+            </div>
+            <div class="goal">
+              <div class="goal-num">03</div>
+              <div class="goal-k">Gamification</div>
+              <div class="goal-t">Dopamin, men ärligt.</div>
+              <div class="goal-d">
+                Profil, nivåer och <strong>badges</strong> vid uppgradering.
+                Visar att handlingen syns — och att den räknas.
+              </div>
+            </div>
+          </div>
+          <div class="foot">
+            <span>Beslut bundna till intervjuinsikter</span
+            ><span class="pg">08 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 9: ITERATIONS -->
+        <section class="slide">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>Iterationer</span><span class="num">09</span>
+            </div>
+          </div>
+          <div class="eyebrow">Två månaders utveckling</div>
+          <h2 class="title">Hur appen <em>växte fram.</em></h2>
+          <div class="evo">
+            <div class="evo-track">
+              <div class="evo-step">
+                <span class="dot"></span>
+                <div class="wk">Steg 1</div>
+                <h4>Första skisser</h4>
+                <p>
+                  Karta, rapport, poäng. Röstsystem föreslogs tidigt — lades på
+                  is.
+                </p>
+              </div>
+              <div class="evo-step">
+                <span class="dot"></span>
+                <div class="wk">Steg 2</div>
+                <h4>Mid-Fi i Figma</h4>
+                <p>Generisk grön UI, otydlig hierarki, små tryckytor.</p>
+              </div>
+              <div class="evo-step">
+                <span class="dot"></span>
+                <div class="wk">Steg 3</div>
+                <h4>Egen redesign</h4>
+                <p>
+                  Tog över visuell riktning: tydligare typografi, kontrast, FAB
+                  64 px.
+                </p>
+              </div>
+              <div class="evo-step late">
+                <span class="dot"></span>
+                <div class="wk">Steg 4</div>
+                <h4>Röstning &amp; gamification</h4>
+                <p>
+                  Pending → Open via community-röst. Badges, streaks, +10
+                  %-boost.
+                </p>
+              </div>
+            </div>
+            <div class="evo-note">
+              <span class="tag">Reflektion</span>
+              <p>
+                Röstsystemet var en av mina <em>första</em> idéer — men byggdes
+                sent. När jag tog större ansvar för design och UX i slutfasen
+                lyfte både tillgänglighet och känsla markant.
+              </p>
+            </div>
+          </div>
+          <div class="foot">
+            <span>Från generisk prototyp till medveten produkt</span
+            ><span class="pg">09 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 10: DEMO -->
+        <section class="slide demo">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec"><span>Demo</span><span class="num">10</span></div>
+          </div>
+          <div class="demo-wrap">
+            <div class="demo-eyebrow">Klickbar prototyp</div>
+            <div class="demo-title"><em>Live</em> demo.</div>
+            <div class="demo-flow" style="margin-top: 20px">
+              <span>Karta</span><span class="arrow">→</span> <span>Foto</span
+              ><span class="arrow">→</span> <span>Plats</span
+              ><span class="arrow">→</span> <span>Rösta</span
+              ><span class="arrow">→</span> <span>Öppen</span
+              ><span class="arrow">→</span>
+              <span>+10 p</span>
+            </div>
+          </div>
+          <div class="foot">
+            <span>Genomgång — tangentbords- &amp; skärmläsarvänlig</span
+            ><span class="pg">10 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 11: SECTION 3 -->
+        <section class="slide section">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>Del tre</span><span class="num">11</span>
+            </div>
+          </div>
+          <div class="section-body">
+            <div>
+              <div class="section-label">Del 03</div>
+              <div class="section-title">
+                Tillgänglighet <em>&amp; principer.</em>
+              </div>
+            </div>
+            <div class="section-number">03</div>
+          </div>
+          <div class="foot">
+            <span>Två principer, applicerade med avsikt</span
+            ><span class="pg">11 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 12: PRINCIPLES (WCAG + NIELSEN) -->
+        <section class="slide">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>Principer</span><span class="num">12</span>
+            </div>
+          </div>
+          <div class="eyebrow">WCAG 2.2 &amp; Nielsen’s Heuristics</div>
+          <h2 class="title">
+            <em>Uppfattbar</em>, <strong>Feedback</strong> &amp;
+            <em>Minimalism.</em>
+          </h2>
+          <div class="principles">
+            <div class="principle">
+              <div class="top">
+                <div class="k">WCAG 2.2 · Uppfattbar</div>
+                <h3>Hög kontrast för <em>läsbarhet i solljus</em>.</h3>
+              </div>
+              <div class="body">
+                <p>
+                  <strong>Beslut:</strong> Val av färger och typsnitt gör appen
+                  läsbar även utomhus i starkt solljus. Färg kombineras alltid
+                  med text eller ikon —
+                  <strong>färg är inte den enda informationsbäraren</strong>.
+                </p>
+                <div class="contrast">
+                  <div class="box pass">
+                    <div class="ratio">8.9:1</div>
+                    <div class="verdict">WCAG AAA</div>
+                    <div class="lbl">Brödtext</div>
+                  </div>
+                  <div class="box fail">
+                    <div class="ratio">2.1:1</div>
+                    <div class="verdict">Förkastad</div>
+                    <div class="lbl">Tidig lime-på-cream</div>
+                  </div>
+                </div>
+                <div class="wcag">
+                  <span class="chip">1.4.3 Kontrast</span>
+                  <span class="chip">1.4.11 Icke-text</span>
+                  <span class="chip">1.4.1 Färg</span>
+                </div>
+                <div class="effect">
+                  Effekt — läsbar i solljus, inte bara på skärm.
+                </div>
+              </div>
+            </div>
+            <div class="principle">
+              <div class="top">
+                <div class="k">Nielsen #1 · Visibility of system status</div>
+                <h3>Varje åtgärd får ett <em>ärligt svar</em>.</h3>
+              </div>
+              <div class="body">
+                <p>
+                  <strong>Beslut:</strong> fokusringar, success-overlays,
+                  haptik(<em>Pending · Open · Cleared</em>).
+                </p>
+                <div class="wcag">
+                  <span class="chip">2.4.7 Fokus synlig</span>
+                  <span class="chip">2.5.8 Mål­storlek</span>
+                  <span class="chip">4.1.3 Statusmeddelanden</span>
+                </div>
+                <div class="effect">
+                  Effekt — dubbeltryck på submit försvann i omtest.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="nielsen-grid" style="margin-top: 20px">
+            <div class="nielsen-card">
+              <div class="top">
+                <div class="k">Nielsen #8 · Aesthetic & Minimalist Design</div>
+                <h3><em>Don't overwhelm</em> the user.</h3>
+                <h3>
+                  <em>Intrinstic</em> och <em>Extraneous</em> Kognitiv
+                  Belastning
+                </h3>
+              </div>
+              <div class="body">
+                <p>
+                  <strong>Beslut:</strong> UI:n använder en enkel
+                  <strong>bottom navigation</strong> (Hem, Karta, Rapportera,
+                  Aktivitet, Profil). Rapporterings­skärmen har bara
+                  <strong>tre kritiska steg</strong>: Foto, Plats, Skicka. Vi
+                  tog bort onödiga fält från den första första designen.
+                </p>
+                <div class="effect">
+                  Effekt — högre slutförandegrad, färre användare hoppar av.
+                </div>
+              </div>
+            </div>
+            <div class="nielsen-card">
+              <div class="top">
+                <div class="k">Nielsen #6 · Recognition rather than recall</div>
+                <h3>Visa, <em>få dem inte att minnas</em>.</h3>
+              </div>
+              <div class="body">
+                <p>
+                  <strong>Beslut:</strong> Röstnings­skärmen visar
+                  <strong>bilden</strong> av skräpet direkt intill knapparna
+                  ”Ja” / ”Nej”. Användaren behöver inte komma ihåg vad rapporten
+                  handlade om.
+                </p>
+                <div class="effect">
+                  Effekt — snabbare beslut och mindre kognitiv belastning.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="foot">
+            <span>WCAG · Nielsen · konkreta beslut</span
+            ><span class="pg">12 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 13: UX WRITING -->
+        <section class="slide">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>UX-writing</span><span class="num">13</span>
+            </div>
+          </div>
+          <div class="eyebrow">Microcopy</div>
+          <h2 class="title">Ord som <em>gör jobbet</em>.</h2>
+          <div class="micro">
+            <div class="m">
+              <div class="k">CTA</div>
+              <div class="before">Skicka formulär</div>
+              <div class="after">Rapportera skräpet</div>
+              <div class="why">Användarens avsikt, inte systemets mekanik.</div>
+            </div>
+            <div class="m">
+              <div class="k">Fel · ingen GPS</div>
+              <div class="before">Error 0x42: location unavailable</div>
+              <div class="after">
+                Vi hittar inte din plats. Sätt ut en nål istället?
+              </div>
+              <div class="why">Klarspråk + återhämtning på samma skärm.</div>
+            </div>
+            <div class="m">
+              <div class="k">Klart</div>
+              <div class="before">Submission successful.</div>
+              <div class="after">
+                Tack — din rapport är på kartan. +10 poäng.
+              </div>
+              <div class="why">Bekräftar utfall och lyfter belöningen.</div>
+            </div>
+          </div>
+          <div class="foot">
+            <span>Microcopy · ton · hierarki</span
+            ><span class="pg">13 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 14: SUMMARY - REAL EXAMPLES -->
+        <section class="slide">
+          <div class="chrome">
+            <div class="wordmark"><span class="dot"></span>Litter Hero</div>
+            <div class="sec">
+              <span>Sammanfattning</span><span class="num">14</span>
+            </div>
+          </div>
+          <div class="eyebrow">Beslut, exemplifierade</div>
+          <h2 class="title">Konsekventa beslut, <em>en riktning.</em></h2>
+          <div class="goal-grid">
+            <div class="goal">
+              <div class="goal-num">01</div>
+              <div class="goal-k">Användarcentrerat</div>
+              <div class="goal-t">Rapportflöde · Förenklad</div>
+              <div class="goal-d">
+                Prototypen hade från början separata knappar för ”Take Photo”
+                och ”Upload”. Testning visade att användare blev förvirrade. Vi
+                slog ihop dem till en enda åtgärd: ”Ladda upp eller ta foto”.
+                Resultat: <strong>snabbare inskickning, färre fel.</strong>
+              </div>
+            </div>
+            <div class="goal">
+              <div class="goal-num">02</div>
+              <div class="goal-k">Tillgängligt</div>
+              <div class="goal-t">Tillgängligt WCAG 2.2 från start.</div>
+              <div class="goal-d">
+                Kontrast, målstorlek, fokus och status — designvillkor, inte
+                påklistrat.
+              </div>
+            </div>
+            <div class="goal">
+              <div class="goal-num">03</div>
+              <div class="goal-k">Motivation</div>
+              <div class="goal-t">Städning · Före & Efter</div>
+              <div class="goal-d">
+                Städbevis kräver
+                <strong>både en ”före”-bild och en ”efter”-bild</strong>.
+                Väljare ser en sida‑vid‑sida‑jämförelse för att godkänna
+                städningen. Detta minskar skräp‑spam, ökar förtroendet och gör
+                att städningen känns seriös.
+              </div>
+            </div>
+          </div>
+          <div class="foot">
+            <span>Beslut · evidens · effekt</span
+            ><span class="pg">14 / 15</span>
+          </div>
+        </section>
+
+        <!-- SLIDE 15: CLOSING -->
+        <section class="slide closing">
+          <div class="closing-inner">
+            <div class="thanks"><em>Tack.</em></div>
+            <div class="questions">Frågor?</div>
+            <div class="closing-meta">
+              <span>Litter Hero</span>
+              <span>UX &amp; Tillgänglighet</span>
+              <span>Rapportflöde · Hi-Fi-prototyp</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button id="prev" aria-label="Previous slide">◀</button>
+      <span class="counter" id="counter">1 / 15</span>
+      <button id="next" aria-label="Next slide">▶</button>
+    </div>
+    <div class="hint">Use <kbd>←</kbd> <kbd>→</kbd> to navigate</div>
+
+    <script>
+      const slides = document.querySelectorAll(".slide");
+      let idx = 0;
+      const counter = document.getElementById("counter");
+      function show(i) {
+        if (i < 0 || i >= slides.length) return;
+        slides[idx].classList.remove("active");
+        idx = i;
+        slides[idx].classList.add("active");
+        counter.textContent = idx + 1 + " / " + slides.length;
+      }
+      document.getElementById("prev").onclick = () => show(idx - 1);
+      document.getElementById("next").onclick = () => show(idx + 1);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === " ") {
+          e.preventDefault();
+          show(idx + 1);
+        }
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          show(idx - 1);
+        }
+        if (e.key === "Home") {
+          e.preventDefault();
+          show(0);
+        }
+        if (e.key === "End") {
+          e.preventDefault();
+          show(slides.length - 1);
+        }
+      });
+    </script>
+  </body>
+</html>
